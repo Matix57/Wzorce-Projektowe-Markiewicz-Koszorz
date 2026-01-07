@@ -3,7 +3,7 @@ package com.example.wzorce.decorator;
 import com.example.wzorce.dto.PostDto;
 
 /**
- * Dekorator odpowiedzialny za obsługę komentarzy.
+ * Dekorator, który usuwa komentarze, jeśli nie są potrzebne.
  */
 public class CommentDecorator extends PostDecorator {
 
@@ -14,7 +14,7 @@ public class CommentDecorator extends PostDecorator {
     @Override
     public PostDto getPost() {
         PostDto postDto = super.getPost();
-        postDto.setComments(postDto.getComments());
+        postDto.setComments(null);
         return postDto;
     }
 }

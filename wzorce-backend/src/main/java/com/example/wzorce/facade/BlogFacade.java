@@ -38,7 +38,7 @@ public class BlogFacade {
      * Zwraca post z pełnym widokiem albo za pomocą dostarczonej strategii.
      */
     @Transactional
-    public PostDto getPostWithDecorators(Long id, boolean includeTags, boolean includeComments) {
+    public PostDto getPostWithDecorators(Long id, boolean excludeTags, boolean excludeComments) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Post not found"));
 
@@ -47,10 +47,10 @@ public class BlogFacade {
 
         PostComponent postComponent = new BasicPost(mapper.mapToPostDto(post));
 
-        if (includeTags) {
+        if (excludeTags) {
             postComponent = new TagDecorator(postComponent);
         }
-        if (includeComments) {
+        if (excludeComments) {
             postComponent = new CommentDecorator(postComponent);
         }
 

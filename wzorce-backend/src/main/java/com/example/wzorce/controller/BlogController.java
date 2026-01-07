@@ -30,17 +30,17 @@ public class BlogController {
      * Pobiera post na podstawie ID z opcjonalnymi dekoratorami.
      *
      * @param id ID posta
-     * @param includeTags Czy dołączyć tagi
-     * @param includeComments Czy dołączyć komentarze
+     * @param excludeTags Czy dołączyć tagi
+     * @param excludeComments Czy dołączyć komentarze
      * @return PostDto z opcjonalnymi dekoratorami
      */
     @GetMapping("/{id}/decorated")
     public ResponseEntity<PostDto> getPostWithDecorators(
             @PathVariable Long id,
-            @RequestParam(defaultValue = "false") boolean includeTags,
-            @RequestParam(defaultValue = "false") boolean includeComments) {
+            @RequestParam(defaultValue = "false") boolean excludeTags,
+            @RequestParam(defaultValue = "false") boolean excludeComments) {
         try {
-            return ResponseEntity.ok(blogFacade.getPostWithDecorators(id, includeTags, includeComments));
+            return ResponseEntity.ok(blogFacade.getPostWithDecorators(id, excludeTags, excludeComments));
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }

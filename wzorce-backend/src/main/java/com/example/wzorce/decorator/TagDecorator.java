@@ -3,7 +3,7 @@ package com.example.wzorce.decorator;
 import com.example.wzorce.dto.PostDto;
 
 /**
- * Dekorator odpowiedzialny za obsługę tagów.
+ * Dekorator, który usuwa tagi, jeśli nie są potrzebne.
  */
 public class TagDecorator extends PostDecorator {
 
@@ -14,7 +14,7 @@ public class TagDecorator extends PostDecorator {
     @Override
     public PostDto getPost() {
         PostDto postDto = super.getPost();
-        postDto.setTags(postDto.getTags());
+        postDto.setTags(null);
         return postDto;
     }
 }
