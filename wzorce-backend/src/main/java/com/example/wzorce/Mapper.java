@@ -9,29 +9,39 @@ import com.example.wzorce.model.Tag;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
 public class Mapper {
+
     public PostDto mapToPostDto(Post post) {
         return PostDto.builder()
                 .id(post.getId())
                 .title(post.getTitle())
                 .content(post.getContent())
-                .tags(post.getTags().stream()
-                        .map(Tag::getName)
-                        .collect(Collectors.toList()))
+                .tags(post.getTags() != null
+                        ? post.getTags().stream().map(Tag::getName).collect(Collectors.toList())
+                        : new ArrayList<>())
                 .comments(post.getComments() != null
-                        ? post.getComments().stream()
-                        .map(this::mapToCommentDto)
-                        .collect(Collectors.toList())
-                        : new ArrayList<>()) // Zabezpieczenie przed null
+                        ? post.getComments().stream().map(this::mapToCommentDto).collect(Collectors.toList())
+                        : new ArrayList<>())
                 .build();
+    }
+
+    private List<CommentDto> mapComments(Post post) {
+        if (post.getComments() == null) {
+            return new ArrayList<>();
+        }
+        List<CommentDto> comments = new ArrayList<>();
+        for (Comment comment : post.getComments()) {
+            comments.add(mapToCommentDto(comment));
+        }
+        return comments;
     }
 
     public CommentDto mapToCommentDto(Comment comment) {
         return CommentDto.builder()
-                .id(comment.getId())
                 .author(comment.getAuthor())
                 .content(comment.getContent())
                 .build();
