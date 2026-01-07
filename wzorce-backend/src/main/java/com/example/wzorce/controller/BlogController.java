@@ -16,20 +16,42 @@ public class BlogController {
 
     private final BlogFacade blogFacade;
 
+    /**
+     * Pobiera wszystkie posty.
+     *
+     * @return Lista wszystkich postów
+     */
     @GetMapping
     public ResponseEntity<List<PostDto>> getAllPosts() {
         return ResponseEntity.ok(blogFacade.getAllPosts());
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<PostDto> getPostById(@PathVariable Long id) {
+    /**
+     * Pobiera post na podstawie ID z opcjonalnymi dekoratorami.
+     *
+     * @param id ID posta
+     * @param includeTags Czy dołączyć tagi
+     * @param includeComments Czy dołączyć komentarze
+     * @return PostDto z opcjonalnymi dekoratorami
+     */
+    @GetMapping("/{id}/decorated")
+    public ResponseEntity<PostDto> getPostWithDecorators(
+            @PathVariable Long id,
+            @RequestParam(defaultValue = "false") boolean includeTags,
+            @RequestParam(defaultValue = "false") boolean includeComments) {
         try {
-            return ResponseEntity.ok(blogFacade.getPostById(id));
+            return ResponseEntity.ok(blogFacade.getPostWithDecorators(id, includeTags, includeComments));
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }
     }
 
+    /**
+     * Tworzy nowy post z tagami i domyślnymi komentarzami.
+     *
+     * @param postDto Dane nowego posta
+     * @return Utworzony PostDto
+     */
     @PostMapping
     public ResponseEntity<PostDto> createPost(@RequestBody PostDto postDto) {
         if (postDto.getTags() == null) {
@@ -39,6 +61,13 @@ public class BlogController {
         return ResponseEntity.status(201).body(createdPost);
     }
 
+    /**
+     * Aktualizuje istniejący post.
+     *
+     * @param id ID posta do aktualizacji
+     * @param updatedPostDto Zaktualizowane dane posta
+     * @return Zaktualizowany PostDto
+     */
     @PutMapping("/{id}")
     public ResponseEntity<PostDto> updatePost(@PathVariable Long id, @RequestBody PostDto updatedPostDto) {
         try {
@@ -48,6 +77,12 @@ public class BlogController {
         }
     }
 
+    /**
+     * Usuwa post na podstawie ID.
+     *
+     * @param id ID posta do usunięcia
+     * @return Odpowiedź HTTP z kodem 204 (No Content) lub 404 (Not Found)
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePost(@PathVariable Long id) {
         if (blogFacade.deletePost(id)) {

@@ -34,8 +34,8 @@ public class PostService {
 
     public PostDto createPost(PostDto postDto) {
         Post post = mapper.mapToPostEntity(postDto);
-        post = postRepository.save(post);
-        return mapToPostWithTags(post.getId());
+        postRepository.save(post);
+        return getPostById(post.getId());
     }
 
     private PostDto mapToPostWithTags(Long postId) {

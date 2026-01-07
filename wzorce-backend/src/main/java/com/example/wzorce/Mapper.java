@@ -59,6 +59,12 @@ public class Mapper {
                 .id(postDto.getId())
                 .title(postDto.getTitle())
                 .content(postDto.getContent())
+                .tags(postDto.getTags() != null
+                        ? postDto.getTags().stream()
+                        .filter(tagName -> tagName != null && !tagName.isEmpty())
+                        .map(tagName -> Tag.builder().name(tagName).build())
+                        .toList()
+                        : new ArrayList<>())
                 .build();
     }
 }
