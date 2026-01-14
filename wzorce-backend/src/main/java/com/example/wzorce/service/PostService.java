@@ -52,6 +52,7 @@ public class PostService {
                 .orElseThrow(() -> new RuntimeException("Post not found"));
         post.setTitle(updatedPostDto.getTitle());
         post.setContent(updatedPostDto.getContent());
+        post.setAuthor(updatedPostDto.getAuthor());
         if (updatedPostDto.getTags() != null) {
             post.getTags().clear();
             Post finalPost = post;

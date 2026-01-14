@@ -20,6 +20,7 @@ public class Mapper {
                 .id(post.getId())
                 .title(post.getTitle())
                 .content(post.getContent())
+                .author(post.getAuthor())
                 .tags(post.getTags() != null
                         ? post.getTags().stream().map(Tag::getName).collect(Collectors.toList())
                         : new ArrayList<>())
@@ -60,6 +61,7 @@ public class Mapper {
                 .id(postDto.getId())
                 .title(postDto.getTitle())
                 .content(postDto.getContent())
+                .author(postDto.getAuthor())
                 .tags(postDto.getTags() != null
                         ? postDto.getTags().stream()
                         .filter(tagName -> tagName != null && !tagName.isEmpty())
