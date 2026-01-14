@@ -3,7 +3,9 @@ package com.example.wzorce.service;
 import com.example.wzorce.dto.PostDto;
 import com.example.wzorce.Mapper;
 import com.example.wzorce.model.Post;
+import com.example.wzorce.model.Tag;
 import com.example.wzorce.repository.PostRepository;
+import com.example.wzorce.repository.TagRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,6 +18,7 @@ import java.util.stream.Collectors;
 public class PostService {
 
     private final PostRepository postRepository;
+    private final TagRepository tagRepository;
     private final Mapper mapper;
 
     public List<PostDto> getAllPosts() {
@@ -49,15 +52,16 @@ public class PostService {
                 .orElseThrow(() -> new RuntimeException("Post not found"));
         post.setTitle(updatedPostDto.getTitle());
         post.setContent(updatedPostDto.getContent());
+        if (updatedPostDto.getTags() != null) {
+            post.getTags().clear();
+            Post finalPost = post;
+            updatedPostDto.getTags().forEach(tagName -> {
+                Tag tag = tagRepository.findByName(tagName)
+                        .orElseGet(() -> new Tag(tagName));
+                finalPost.getTags().add(tag);
+            });
+        }
         post = postRepository.save(post);
         return mapper.mapToPostDto(post);
-    }
-
-    public boolean deletePost(Long id) {
-        if (postRepository.existsById(id)) {
-            postRepository.deleteById(id);
-            return true;
-        }
-        return false;
     }
 }

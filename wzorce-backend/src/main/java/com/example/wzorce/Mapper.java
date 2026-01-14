@@ -42,6 +42,7 @@ public class Mapper {
 
     public CommentDto mapToCommentDto(Comment comment) {
         return CommentDto.builder()
+                .id(comment.getId())
                 .author(comment.getAuthor())
                 .content(comment.getContent())
                 .build();

@@ -21,4 +21,8 @@ public class Tag {
 
     @ManyToMany(mappedBy = "tags")
     private List<Post> posts;
+
+    public Tag(String name) {
+        this.name = name;
+    }
 }

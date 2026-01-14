@@ -47,16 +47,16 @@ public class CommentService {
         return false;
     }
 
-    public void addDefaultCommentsToPost(Long postId) {
-        postRepository.findById(postId).ifPresent(post -> {
-            // Domyślne komentarze
-            List<Comment> defaultComments = List.of(
-                    Comment.builder().author("Admin").content("Welcome to the blog!").post(post).build(),
-                    Comment.builder().author("User").content("Great post!").post(post).build()
-            );
-            commentRepository.saveAll(defaultComments);
-        });
-    }
+//    public void addDefaultCommentsToPost(Long postId) { // method for test purposes
+//        postRepository.findById(postId).ifPresent(post -> {
+//            // Domyślne komentarze
+//            List<Comment> defaultComments = List.of(
+//                    Comment.builder().author("Admin").content("Welcome to the blog!").post(post).build(),
+//                    Comment.builder().author("User").content("Great post!").post(post).build()
+//            );
+//            commentRepository.saveAll(defaultComments);
+//        });
+//    }
 
     public void deleteCommentsByPost(Long postId) {
         List<Comment> comments = commentRepository.findByPostId(postId);

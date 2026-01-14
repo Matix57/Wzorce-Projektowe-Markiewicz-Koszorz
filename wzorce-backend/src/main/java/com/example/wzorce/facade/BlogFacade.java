@@ -7,7 +7,9 @@ import com.example.wzorce.decorator.PostComponent;
 import com.example.wzorce.decorator.TagDecorator;
 import com.example.wzorce.dto.PostDto;
 import com.example.wzorce.model.Post;
+import com.example.wzorce.repository.CommentRepository;
 import com.example.wzorce.repository.PostRepository;
+import com.example.wzorce.repository.TagRepository;
 import com.example.wzorce.service.CommentService;
 import com.example.wzorce.service.PostService;
 import com.example.wzorce.service.TagService;
@@ -29,6 +31,8 @@ public class BlogFacade {
     private final CommentService commentService;
     private final Mapper mapper;
     private final PostRepository postRepository;
+    private final TagRepository tagRepository;
+    private final CommentRepository commentRepository;
 
     public List<PostDto> getAllPosts() {
         return postService.getAllPosts();
@@ -67,7 +71,7 @@ public class BlogFacade {
         PostDto createdPost = postService.createPost(postDto);
         List<String> tags = postDto.getTags() != null ? postDto.getTags() : new ArrayList<>();
         tagService.addTagsToPost(createdPost.getId(), tags);
-        commentService.addDefaultCommentsToPost(createdPost.getId());
+//        commentService.addDefaultCommentsToPost(createdPost.getId());- was here for tests
         return createdPost;
     }
 
@@ -88,16 +92,20 @@ public class BlogFacade {
      * @param postId ID posta do usunięcia
      * @return True, jeśli post został usunięty, False w przeciwnym razie
      */
+    @Transactional
     public boolean deletePost(Long postId) {
-        postRepository.findById(postId).ifPresent(post -> {
-            post.setTags(new ArrayList<>());
-            postRepository.save(post);
-        });
+        return postRepository.findById(postId).map(post -> {
 
-        if (postRepository.existsById(postId)) {
+            commentRepository.deleteByPostId(postId);
+
+            post.getTags().clear();
+            postRepository.save(post);
+
             postRepository.deleteById(postId);
+
+            tagRepository.deleteUnusedTags();
+
             return true;
-        }
-        return false;
+        }).orElse(false);
     }
 }
